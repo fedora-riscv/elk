@@ -1,0 +1,53 @@
+--- src/zfftifc.f90.orig	2013-12-02 19:09:19.000000000 +0100
++++ src/zfftifc.f90	2014-02-18 12:04:08.778853381 +0100
+@@ -31,30 +31,30 @@
+ !----------------------------------------!
+ !     interface to modified FFTPACK5     !
+ !----------------------------------------!
+-call cfftnd(nd,n,sgn,z)
++!call cfftnd(nd,n,sgn,z)
+ 
+ !-------------------------------------!
+ !     interface to FFTW version 3     !
+ !-------------------------------------!
+-!integer, parameter :: FFTW_ESTIMATE=64
+-!integer i,p
+-!integer(8) plan
+-!real(8) t1
+-!!$OMP CRITICAL
+-!call dfftw_plan_dft(plan,nd,n,z,z,sgn,FFTW_ESTIMATE)
+-!!$OMP END CRITICAL
+-!call dfftw_execute(plan)
+-!!$OMP CRITICAL
+-!call dfftw_destroy_plan(plan)
+-!!$OMP END CRITICAL
+-!if (sgn.eq.-1) then
+-!  p=1
+-!  do i=1,nd
+-!    p=p*n(i)
+-!  end do
+-!  t1=1.d0/dble(p)
+-!  call zdscal(p,t1,z,1)
+-!end if
++integer, parameter :: FFTW_ESTIMATE=64
++integer i,p
++integer(8) plan
++real(8) t1
++!$OMP CRITICAL
++call dfftw_plan_dft(plan,nd,n,z,z,sgn,FFTW_ESTIMATE)
++!$OMP END CRITICAL
++call dfftw_execute(plan)
++!$OMP CRITICAL
++call dfftw_destroy_plan(plan)
++!$OMP END CRITICAL
++if (sgn.eq.-1) then
++  p=1
++  do i=1,nd
++    p=p*n(i)
++  end do
++  t1=1.d0/dble(p)
++  call zdscal(p,t1,z,1)
++end if
+ 
+ !----------------------------------!
+ !     interface to MKL 8.1/9.1     !
