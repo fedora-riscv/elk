@@ -28,7 +28,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		2.2.10
-Release:		3%{?dist}
+Release:		4%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -256,6 +256,9 @@ mv tests.orig tests
 
 
 %changelog
+* Tue Mar 18 2014 Björn Esser <bjoern.esser@gmail.com> - 2.2.10-4
+- rebuilt for mpich-3.1
+
 * Tue Feb 18 2014 Marcin Dulak <Marcin.Dulak@gmail.com> 2.2.10-3
 - removed bundling of BLAS, LAPACK, FFTW, LIBXC, ERF
 - test on 2 cores to reduce randomness in koji multicore builds
