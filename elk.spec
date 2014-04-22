@@ -25,16 +25,16 @@ ExcludeArch: %arm
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
 %global FFTW -L%{_libdir} -lfftw3
+%global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		2.2.10
-Release:		4%{?dist}
+Version:		2.3.16
+Release:		5%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-Patch0:			%{name}.fftw3.zfftifc.f90.patch
 
 
 BuildRequires:		time
@@ -106,18 +106,22 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
-# create common make.inc
-echo "F90_OPTS = -I%{_fmoddir} %{optflags}" > make.inc
-echo "AR = ar" >> make.inc
-echo "LIB_LPK = %BLASLAPACK" >> make.inc
+# create common make.inc.common
+# default fortran
+echo "F90 = gfortran -fopenmp" > make.inc.common
+echo "F77 = gfortran -fopenmp" >> make.inc.common
+echo "F90_OPTS = -I%{_fmoddir} %{optflags}" >> make.inc.common
+echo "F77_OPTS = \$(F90_OPTS)" >> make.inc.common
+echo "AR = ar" >> make.inc.common
+echo "LIB_LPK = %BLASLAPACK" >> make.inc.common
 # enable fftw/libxc dynamic linking
-echo "LIB_FFT = %FFTW" >> make.inc
-echo "LIB_XC = -L%{_libdir} -lxc" >> make.inc
+echo "LIB_FFT = %FFTW" >> make.inc.common
+echo "SRC_FFT = zfftifc_fftw.f90" >> make.inc.common
+echo "LIB_libxc = %LIBXC" >> make.inc.common
+echo "SRC_libxc = libxcifc.f90" >> make.inc.common
 
 # remove bundling of BLAS/LAPACK/FFTW/LIBXC/ERF
-%patch0 -p0
 sed -i "s/blas lapack fft elk/elk/" src/Makefile
-sed -i "s/#SRC_libxc =.*/SRC_libxc = libxcifc.f90/" src/Makefile
 sed -i "s/erf.f90//" src/Makefile
 sed -i "s/,erf//" src/stheta_mp.f90
 # remove bundled sources
@@ -132,23 +136,23 @@ mv src src.orig
 
 # To avoid replicated code define a macro
 %global dobuild() \
-%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" src/Makefile; \
-%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" src/Makefile; \
-%{__sed} -i "s/SRC_mpi = mpi_stub.f90/#SRC_mpi = mpi_stub.f90/" src/Makefile;\
-cat src/Makefile; \
-cp -p src/Makefile Makefile$MPI_SUFFIX; \
-F90='mpif90 -fopenmp' F77='mpif77 -fopenmp' %{__make}; \
+cp -p make.inc.common make.inc; \
+%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" make.inc; \
+%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" make.inc; \
+cat make.inc; \
+cp -p make.inc make.inc$MPI_SUFFIX; \
+%{__make}; \
 mv src/%{name} %{name}$MPI_SUFFIX; \
 %{__make} clean
 
 # build serial/openmp version
 export MPI_SUFFIX=_openmp
 cp -rp src.orig src
-%{__sed} -i "s|F90 =.*|F90 = gfortran -fopenmp|" src/Makefile; \
-%{__sed} -i "s|F77 =.*|F77 = gfortran -fopenmp|" src/Makefile; \
-cat src/Makefile; \
-cp -p src/Makefile Makefile$MPI_SUFFIX; \
-F90='gfortran -fopenmp' F77='gfortran -fopenmp' %{__make}; \
+cp -p make.inc.common make.inc; \
+echo "SRC_MPI = mpi_stub.f90" >> make.inc;\
+cat make.inc; \
+cp -p make.inc make.inc$MPI_SUFFIX; \
+%{__make}; \
 mv src/%{name} .; \
 mv src/eos/eos elk-eos; \
 mv src/spacegroup/spacegroup elk-spacegroup; \
@@ -196,7 +200,7 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 # don't copy utilities - they trigger dependency on perl, python ...
 cp -rp species $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -rp Makefile_* make.inc $RPM_BUILD_ROOT%{_datadir}/%{name}
+cp -rp make.inc* $RPM_BUILD_ROOT%{_datadir}/%{name}
 cp -rp tests examples $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 
@@ -256,6 +260,9 @@ mv tests.orig tests
 
 
 %changelog
+* Tue Apr 22 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.16-5
+- upstream update
+
 * Tue Mar 18 2014 Björn Esser <bjoern.esser@gmail.com> - 2.2.10-4
 - rebuilt for mpich-3.1
 
