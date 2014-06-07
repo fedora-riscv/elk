@@ -29,7 +29,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		2.3.16
-Release:		5%{?dist}
+Release:		6%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -260,6 +260,9 @@ mv tests.orig tests
 
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.16-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Tue Apr 22 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.16-5
 - upstream update
 
