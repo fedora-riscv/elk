@@ -28,8 +28,8 @@ ExcludeArch: %arm
 %global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		2.3.16
-Release:		6%{?dist}
+Version:		2.3.22
+Release:		7%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -107,8 +107,9 @@ This package contains the common binaries.
 %prep
 %setup -q -n %{name}-%{version}
 # create common make.inc.common
-# default fortran
-echo "F90 = gfortran -fopenmp" > make.inc.common
+# default serial fortran
+echo "SRC_MPI = mpi_stub.f90" > make.inc.common
+echo "F90 = gfortran -fopenmp" >> make.inc.common
 echo "F77 = gfortran -fopenmp" >> make.inc.common
 echo "F90_OPTS = -I%{_fmoddir} %{optflags}" >> make.inc.common
 echo "F77_OPTS = \$(F90_OPTS)" >> make.inc.common
@@ -139,6 +140,7 @@ mv src src.orig
 cp -p make.inc.common make.inc; \
 %{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" make.inc; \
 %{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" make.inc; \
+echo "SRC_MPI =" >> make.inc;\
 cat make.inc; \
 cp -p make.inc make.inc$MPI_SUFFIX; \
 %{__make}; \
@@ -149,7 +151,6 @@ mv src/%{name} %{name}$MPI_SUFFIX; \
 export MPI_SUFFIX=_openmp
 cp -rp src.orig src
 cp -p make.inc.common make.inc; \
-echo "SRC_MPI = mpi_stub.f90" >> make.inc;\
 cat make.inc; \
 cp -p make.inc make.inc$MPI_SUFFIX; \
 %{__make}; \
@@ -217,7 +218,9 @@ time %{__make} test 2>&1 | tee tests.${NPROC}$MPI_SUFFIX.log; \
 rm -rf tests
 
 # check serial version
-mv tests tests.orig
+mv tests tests.orig.orig
+cp -rp tests.orig.orig tests.orig
+rm -rf tests.orig/test-018
 ELK_EXECUTABLE="../../%{name}" MPI_SUFFIX=_openmp %docheck
 
 # check openmpi version
@@ -260,6 +263,11 @@ mv tests.orig tests
 
 
 %changelog
+* Sat Jun 07 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-7
+- upstream update
+- fix mpi build
+- tests/test-018 hangs - disabled
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.16-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
