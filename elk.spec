@@ -6,7 +6,7 @@
 ExcludeArch: ppc64
 %endif
 %if 0%{?el6}
-# Error: No Package found for mpich2-devel on el6
+# Error: No Package found for openblas-devel on el6
 ExcludeArch: ppc64
 %endif
 
@@ -14,9 +14,9 @@ ExcludeArch: ppc64
 ExcludeArch: %arm
 
 %if 0%{?el6}
-%global mpich mpich2
-%global mpich_load %_mpich2_load
-%global mpich_unload %_mpich2_unload
+%global mpich mpich
+%global mpich_load %_mpich_load
+%global mpich_unload %_mpich_unload
 %else
 %global mpich mpich
 %global mpich_load %_mpich_load
@@ -29,7 +29,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		2.3.22
-Release:		9%{?dist}
+Release:		10%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -263,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Thu Oct 23 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-10
+- mpich version 3 on EL6
+
 * Tue Oct 07 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-9
 - build against new openmpi
 
