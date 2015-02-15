@@ -28,7 +28,7 @@ ExcludeArch: %arm
 %global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		2.3.22
+Version:		3.0.4
 Release:		10%{?dist}
 Summary:		FP-LAPW Code
 
@@ -263,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Fri Feb 13 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.0.4-10
+- upstream update
+
 * Thu Oct 23 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-10
 - mpich version 3 on EL6
 
