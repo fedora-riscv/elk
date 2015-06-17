@@ -29,7 +29,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		3.0.18
-Release:		10%{?dist}
+Release:		11%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -263,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.18-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Fri Apr 24 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.0.18-10
 - upstream update
 
