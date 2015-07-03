@@ -28,8 +28,8 @@ ExcludeArch: %arm
 %global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		3.0.18
-Release:		11%{?dist}
+Version:		3.1.12
+Release:		12%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -239,10 +239,12 @@ mv tests.orig tests
 
 
 %files
+%defattr(-,root,root,-)
 %{_bindir}/%{name}
 
 
 %files common
+%defattr(-,root,root,-)
 %doc COPYING README
 %{_bindir}/elk-eos
 %{_bindir}/elk-spacegroup
@@ -251,18 +253,25 @@ mv tests.orig tests
 
 
 %files species
+%defattr(-,root,root,-)
 %{_datadir}/%{name}/species
 
 
 %files openmpi
+%defattr(-,root,root,-)
 %{_libdir}/openmpi%{?_opt_cc_suffix}/bin/%{name}_openmpi
 
 
 %files %{mpich}
+%defattr(-,root,root,-)
 %{_libdir}/%{mpich}%{?_opt_cc_suffix}/bin/%{name}_%{mpich}
 
 
 %changelog
+* Thu Jul  2 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.1.12-12
+- upstream update
+- defattr set
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.18-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
