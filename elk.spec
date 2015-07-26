@@ -29,7 +29,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		3.1.12
-Release:		12%{?dist}
+Release:		13%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -63,7 +63,6 @@ quickly and reliably.
 %package openmpi
 Summary:		%{name} - openmpi version
 BuildRequires:		openmpi-devel
-Requires:		openmpi
 Requires:		%{name}-species = %{version}-%{release}
 
 %description openmpi
@@ -75,7 +74,6 @@ This package contains the openmpi version.
 %package %{mpich}
 Summary:		%{name} - %{mpich} version
 BuildRequires:		%{mpich}-devel
-Requires:		%{mpich}
 Requires:		%{name}-species = %{version}-%{release}
 
 %description %{mpich}
@@ -268,6 +266,9 @@ mv tests.orig tests
 
 
 %changelog
+* Sun Jul 26 2015 Sandro Mani <manisandro@gmail.com> - 3.1.12-13
+- Rebuild for RPM MPI Requires Provides Change
+
 * Thu Jul  2 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.1.12-12
 - upstream update
 - defattr set
