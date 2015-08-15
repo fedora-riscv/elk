@@ -29,7 +29,7 @@ ExcludeArch: %arm
 
 Name:			elk
 Version:		3.1.12
-Release:		13%{?dist}
+Release:		14%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -266,6 +266,9 @@ mv tests.orig tests
 
 
 %changelog
+* Sat Aug 15 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 3.1.12-14
+- Rebuild for MPI provides
+
 * Sun Jul 26 2015 Sandro Mani <manisandro@gmail.com> - 3.1.12-13
 - Rebuild for RPM MPI Requires Provides Change
 
