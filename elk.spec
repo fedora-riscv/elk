@@ -1,17 +1,8 @@
 # missing on el6
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
-%if 0%{?el7}
-# Error: No Package found for openblas-devel on el7
-ExcludeArch: ppc64
-%endif
-%if 0%{?el6}
-# Error: No Package found for openblas-devel on el6
-ExcludeArch: ppc64
-%endif
-
-# Error: No Package found for openblas-devel
-ExcludeArch: %arm
+# openblas-devel is exclusive
+ExclusiveArch:		x86_64 %{ix86} armv7hl ppc64le
 
 %if 0%{?el6}
 %global mpich mpich
@@ -28,8 +19,8 @@ ExcludeArch: %arm
 %global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		3.1.12
-Release:		15%{?dist}
+Version:		3.3.15
+Release:		16%{?dist}
 Summary:		FP-LAPW Code
 
 License:		GPLv3+
@@ -135,27 +126,28 @@ mv src src.orig
 
 # To avoid replicated code define a macro
 %global dobuild() \
-cp -p make.inc.common make.inc; \
-%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" make.inc; \
-%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" make.inc; \
-echo "SRC_MPI =" >> make.inc;\
-cat make.inc; \
-cp -p make.inc make.inc$MPI_SUFFIX; \
-%{__make}; \
-mv src/%{name} %{name}$MPI_SUFFIX; \
+cp -p make.inc.common make.inc&& \
+%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" make.inc&& \
+%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" make.inc&& \
+%{__sed} -i "s|F90_OPTS =|F90_OPTS = -I\${MPI_FORTRAN_MOD_DIR}|" make.inc&& \
+echo "SRC_MPI =" >> make.inc&&\
+cat make.inc&& \
+cp -p make.inc make.inc$MPI_SUFFIX&& \
+%{__make}&& \
+mv src/%{name} %{name}$MPI_SUFFIX&& \
 %{__make} clean
 
 # build serial/openmp version
 export MPI_SUFFIX=_openmp
 cp -rp src.orig src
-cp -p make.inc.common make.inc; \
-cat make.inc; \
-cp -p make.inc make.inc$MPI_SUFFIX; \
-%{__make}; \
-mv src/%{name} .; \
-mv src/eos/eos elk-eos; \
-mv src/spacegroup/spacegroup elk-spacegroup; \
-%{__make} clean; \
+cp -p make.inc.common make.inc&& \
+cat make.inc&& \
+cp -p make.inc make.inc$MPI_SUFFIX&& \
+%{__make}&& \
+mv src/%{name} .&& \
+mv src/eos/eos elk-eos&& \
+mv src/spacegroup/spacegroup elk-spacegroup&& \
+%{__make} clean&& \
 rm -rf src
 
 # build openmpi version
@@ -178,7 +170,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 
 # To avoid replicated code define a macro
 %global doinstall() \
-mkdir -p $RPM_BUILD_ROOT/$MPI_BIN; \
+mkdir -p $RPM_BUILD_ROOT/$MPI_BIN&& \
 install -p -m 755 %{name}$MPI_SUFFIX $RPM_BUILD_ROOT/$MPI_BIN
 
 # install serial version
@@ -210,9 +202,9 @@ export OMP_NUM_THREADS=$NPROC
 
 # To avoid replicated code define a macro
 %global docheck() \
-cp -rp tests.orig tests; \
-sed -i "s#../../src/elk#$ELK_EXECUTABLE#g" tests/tests.sh; \
-time %{__make} test 2>&1 | tee tests.${NPROC}$MPI_SUFFIX.log; \
+cp -rp tests.orig tests&& \
+sed -i "s#../../src/elk#$ELK_EXECUTABLE#g" tests/tests.sh&& \
+time %{__make} test 2>&1 | tee tests.${NPROC}$MPI_SUFFIX.log&& \
 rm -rf tests
 
 # check serial version
@@ -266,6 +258,10 @@ mv tests.orig tests
 
 
 %changelog
+* Sat Jan 16 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.3.15-16
+- upstream update
+- ExclusiveArch due to openblas
+
 * Tue Sep 15 2015 Orion Poplawski <orion@cora.nwra.com> - 3.1.12-15
 - Rebuild for openmpi 1.10.0
 
