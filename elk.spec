@@ -2,24 +2,15 @@
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
 # openblas-devel is exclusive
-ExclusiveArch:		x86_64 %{ix86} armv7hl ppc64le
-
-%if 0%{?el6}
-%global mpich mpich
-%global mpich_load %_mpich_load
-%global mpich_unload %_mpich_unload
-%else
-%global mpich mpich
-%global mpich_load %_mpich_load
-%global mpich_unload %_mpich_unload
-%endif
+ExclusiveArch:		x86_64 %{ix86} ppc64le
+# tests run for several days on armv7hl without finishing
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
 %global FFTW -L%{_libdir} -lfftw3
 %global LIBXC -L%{_libdir} -lxc
 
 Name:			elk
-Version:		3.3.15
+Version:		3.3.17
 Release:		16%{?dist}
 Summary:		FP-LAPW Code
 
@@ -62,15 +53,15 @@ Requires:		%{name}-species = %{version}-%{release}
 This package contains the openmpi version.
 
 
-%package %{mpich}
-Summary:		%{name} - %{mpich} version
-BuildRequires:		%{mpich}-devel
+%package mpich
+Summary:		%{name} - mpich version
+BuildRequires:		mpich-devel
 Requires:		%{name}-species = %{version}-%{release}
 
-%description %{mpich}
+%description mpich
 %{desc_base}
 
-This package contains the %{mpich} version.
+This package contains the mpich version.
 
 
 %package species
@@ -159,9 +150,9 @@ rm -rf src
 
 cp -rp src.orig src
 # build mpich version
-%{mpich_load}
+%{_mpich_load}
 %dobuild
-%{mpich_unload}
+%{_mpich_unload}
 # leave last src build for debuginfo
 
 
@@ -183,9 +174,9 @@ install -p -m 755 %{name} elk-eos elk-spacegroup $RPM_BUILD_ROOT%{_bindir}
 %{_openmpi_unload}
 
 # install mpich version
-%{mpich_load}
+%{_mpich_load}
 %doinstall
-%{mpich_unload}
+%{_mpich_unload}
 
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 
@@ -220,9 +211,9 @@ ELK_EXECUTABLE="mpiexec -np ${NPROC} ../../%{name}$MPI_SUFFIX" %docheck
 
 # this will fail for mpich2 on el6 - mpd would need to be started ...
 # check mpich version
-%{mpich_load}
+%{_mpich_load}
 ELK_EXECUTABLE="mpiexec -np ${NPROC} ../../%{name}$MPI_SUFFIX" %docheck
-%{mpich_unload}
+%{_mpich_unload}
 
 # restore tests
 mv tests.orig tests
@@ -252,15 +243,16 @@ mv tests.orig tests
 %{_libdir}/openmpi%{?_opt_cc_suffix}/bin/%{name}_openmpi
 
 
-%files %{mpich}
+%files mpich
 %defattr(-,root,root,-)
-%{_libdir}/%{mpich}%{?_opt_cc_suffix}/bin/%{name}_%{mpich}
+%{_libdir}/mpich%{?_opt_cc_suffix}/bin/%{name}_mpich
 
 
 %changelog
-* Sat Jan 16 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.3.15-16
+* Fri Jan 22 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.3.17-16
 - upstream update
 - ExclusiveArch due to openblas
+- old el6 mpich macros removed
 
 * Tue Sep 15 2015 Orion Poplawski <orion@cora.nwra.com> - 3.1.12-15
 - Rebuild for openmpi 1.10.0
