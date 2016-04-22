@@ -7,12 +7,12 @@ ExclusiveArch:		x86_64 %{ix86} ppc64le
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
 %global FFTW -L%{_libdir} -lfftw3
-%global LIBXC -L%{_libdir} -lxc
+%global LIBXC -L%{_libdir} -lxc -lxcf90
 
 Name:			elk
 Version:		3.3.17
-Release:		17%{?dist}
-Summary:		FP-LAPW Code
+Release:		18%{?dist}
+Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
@@ -249,6 +249,9 @@ mv tests.orig tests
 
 
 %changelog
+* Thu Apr 21 2016 Susi Lehtola <jussilehtola@fedoraproject.org> - 3.3.17-18
+- Rebuild against libxc 3.0.0.
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.17-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
