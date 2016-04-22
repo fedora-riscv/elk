@@ -17,7 +17,8 @@ Summary:		An all-electron full-potential linearised augmented-plane wave code
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-
+# Build against libxc 3
+Patch0:			elk-3.3.17-libxc3.patch
 
 BuildRequires:		time
 
@@ -86,6 +87,7 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch0 -p1 -b .libxc
 # create common make.inc.common
 # default serial fortran
 echo "SRC_MPI = mpi_stub.f90" > make.inc.common
