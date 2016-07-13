@@ -1,8 +1,8 @@
 # missing on el6
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
-# openblas-devel is exclusive
-ExclusiveArch:		x86_64 %{ix86} ppc64le
+# openblas is supported on these arches
+ExclusiveArch:		x86_64 %{ix86} aarch64 ppc64le
 # tests run for several days on armv7hl without finishing
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
@@ -11,7 +11,7 @@ ExclusiveArch:		x86_64 %{ix86} ppc64le
 
 Name:			elk
 Version:		3.3.17
-Release:		18%{?dist}
+Release:		19%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -251,6 +251,9 @@ mv tests.orig tests
 
 
 %changelog
+* Wed Jul 13 2016 Peter Robinson <pbrobinson@fedoraproject.org> 3.3.17-19
+- openblas supported on aarch64
+
 * Thu Apr 21 2016 Susi Lehtola <jussilehtola@fedoraproject.org> - 3.3.17-18
 - Rebuild against libxc 3.0.0.
 
