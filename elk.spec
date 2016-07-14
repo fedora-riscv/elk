@@ -251,7 +251,7 @@ mv tests.orig tests
 
 
 %changelog
-* THu Jul 14 2016 Peter Robinson <pbrobinson@fedoraproject.org>3.3.17-20
+* Thu Jul 14 2016 Peter Robinson <pbrobinson@fedoraproject.org> 3.3.17-20
 - openblas supported on Power64
 
 * Wed Jul 13 2016 Peter Robinson <pbrobinson@fedoraproject.org> 3.3.17-19
