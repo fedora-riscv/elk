@@ -1,8 +1,12 @@
 # missing on el6
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
-# openblas is supported on these arches
-ExclusiveArch:		x86_64 %{ix86} aarch64 %{arm} %{power64}
+%if 0%{?el6}
+# el6/ppc64 Error: No Package found for mpich-devel
+ExclusiveArch:          x86_64 %{ix86}
+%else
+ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
+%endif
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
 %global FFTW -L%{_libdir} -lfftw3
