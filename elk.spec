@@ -2,16 +2,19 @@
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
 # openblas is supported on these arches
-ExclusiveArch:		x86_64 %{ix86} aarch64 %{power64}
-# tests run for several days on armv7hl without finishing
+ExclusiveArch:		x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 %global BLASLAPACK -L%{_libdir} -lopenblas
 %global FFTW -L%{_libdir} -lfftw3
+%if 0%{?fedora} >= 25
 %global LIBXC -L%{_libdir} -lxc -lxcf90
+%else
+%global LIBXC -L%{_libdir} -lxc
+%endif
 
 Name:			elk
-Version:		3.3.17
-Release:		20%{?dist}
+Version:		4.0.15
+Release:		21%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -87,7 +90,9 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
+%if 0%{?fedora} >= 25 
 %patch0 -p1 -b .libxc
+%endif
 # create common make.inc.common
 # default serial fortran
 echo "SRC_MPI = mpi_stub.f90" > make.inc.common
@@ -190,7 +195,7 @@ cp -rp tests examples $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %check
 
-export NPROC=2 # test on 2 cores
+export NPROC=1 # test on X cores
 export OMP_NUM_THREADS=$NPROC
 
 # To avoid replicated code define a macro
@@ -203,7 +208,6 @@ rm -rf tests
 # check serial version
 mv tests tests.orig.orig
 cp -rp tests.orig.orig tests.orig
-rm -rf tests.orig/test-018
 ELK_EXECUTABLE="../../%{name}" MPI_SUFFIX=_openmp %docheck
 
 # check openmpi version
@@ -222,12 +226,10 @@ mv tests.orig tests
 
 
 %files
-%defattr(-,root,root,-)
 %{_bindir}/%{name}
 
 
 %files common
-%defattr(-,root,root,-)
 %doc COPYING README
 %{_bindir}/elk-eos
 %{_bindir}/elk-spacegroup
@@ -236,21 +238,25 @@ mv tests.orig tests
 
 
 %files species
-%defattr(-,root,root,-)
 %{_datadir}/%{name}/species
 
 
 %files openmpi
-%defattr(-,root,root,-)
 %{_libdir}/openmpi%{?_opt_cc_suffix}/bin/%{name}_openmpi
 
 
 %files mpich
-%defattr(-,root,root,-)
 %{_libdir}/mpich%{?_opt_cc_suffix}/bin/%{name}_mpich
 
 
 %changelog
+* Tue Aug 09 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.0.15-21
+- upstream update
+- remove defattr
+- run all tests
+- speedup test by running on single core
+- libxc 3 on fedora >= 25
+
 * Thu Jul 14 2016 Peter Robinson <pbrobinson@fedoraproject.org> 3.3.17-20
 - openblas supported on Power64
 
