@@ -18,7 +18,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		4.0.15
-Release:		21%{?dist}
+Release:		22%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -254,6 +254,9 @@ mv tests.orig tests
 
 
 %changelog
+* Fri Oct 21 2016 Orion Poplawski <orion@cora.nwra.com> - 4.0.15-22
+- Rebuild for openmpi 2.0
+
 * Tue Aug 09 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.0.15-21
 - upstream update
 - remove defattr
