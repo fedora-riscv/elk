@@ -24,8 +24,8 @@ Summary:		An all-electron full-potential linearised augmented-plane wave code
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-# Build against libxc 3
-Patch0:			elk-3.3.17-libxc3.patch
+# Build against libxc 4
+Patch0:			elk-4.3.6-libxc4.patch
 
 BuildRequires:		time
 
