@@ -1,3 +1,8 @@
+# Warning:
+# Anyone editing this spec file please make sure the same spec file
+# works on other fedora and epel releases, which are supported by this software.
+# No quick Rawhide-only fixes will be allowed.
+
 # missing on el6
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
@@ -18,14 +23,14 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		4.3.6
-Release:		27%{?dist}
+Release:		28%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-# Build against libxc 4
-Patch0:			elk-4.3.6-libxc4.patch
+Patch0:			elk-3.3.17-libxc3.patch
+Patch1:			elk-4.3.6-libxc4.patch
 
 BuildRequires:		time
 
@@ -94,8 +99,12 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
-%if 0%{?fedora} >= 25 
+%if 0%{?fedora} >= 28
+%patch1 -p1 -b .libxc
+%else
+%if 0%{?fedora} >= 25
 %patch0 -p1 -b .libxc
+%endif
 %endif
 # create common make.inc.common
 # default serial fortran
@@ -254,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Sat Apr 07 2018 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.3.6-28
+- keep both libxc 3 and 4 patches, since the repo is synced to older fedora and epel
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.6-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
