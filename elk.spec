@@ -23,7 +23,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		4.3.6
-Release:		30%{?dist}
+Release:		31%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -263,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Thu Feb 14 2019 Orion Poplawski <orion@nwra.com> - 4.3.6-31
+- Rebuild for openmpi 3.1.3
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.6-30
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
