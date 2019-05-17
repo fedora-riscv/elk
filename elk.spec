@@ -3,6 +3,11 @@
 # works on other fedora and epel releases, which are supported by this software.
 # No quick Rawhide-only fixes will be allowed.
 
+%if 0%{?el6} || 0%{?el7}
+elk-5.2.14 requires libxc 3 or newer
+%quit
+%endif
+
 # missing on el6
 %{?!_fmoddir: %global _fmoddir %{_libdir}/gfortran/modules}
 
@@ -22,15 +27,13 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
 Name:			elk
-Version:		4.3.6
-Release:		31%{?dist}
+Version:		5.2.14
+Release:		1%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-Patch0:			elk-3.3.17-libxc3.patch
-Patch1:			elk-4.3.6-libxc4.patch
 
 BuildRequires:		time
 
@@ -99,13 +102,6 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
-%if 0%{?fedora} >= 28
-%patch1 -p1 -b .libxc
-%else
-%if 0%{?fedora} >= 25
-%patch0 -p1 -b .libxc
-%endif
-%endif
 # create common make.inc.common
 # default serial fortran
 echo "SRC_MPI = mpi_stub.f90" > make.inc.common
@@ -263,6 +259,10 @@ mv tests.orig tests
 
 
 %changelog
+* Fri May 17 2019 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-1
+- new upstream release
+- stop maintenance on epel6/epel7 since libxc 3 or newer is required by elk-5.2.14
+
 * Thu Feb 14 2019 Orion Poplawski <orion@nwra.com> - 4.3.6-31
 - Rebuild for openmpi 3.1.3
 
