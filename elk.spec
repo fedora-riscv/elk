@@ -28,7 +28,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		5.2.14
-Release:		1%{?dist}
+Release:		2%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -259,6 +259,9 @@ mv tests.orig tests
 
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 5.2.14-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Fri May 17 2019 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-1
 - new upstream release
 - stop maintenance on epel6/epel7 since libxc 3 or newer is required by elk-5.2.14
