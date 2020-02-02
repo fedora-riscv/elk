@@ -27,8 +27,8 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
 Name:			elk
-Version:		5.2.14
-Release:		4%{?dist}
+Version:		6.3.2
+Release:		1%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -110,6 +110,10 @@ echo "F77 = gfortran -fopenmp -fallow-argument-mismatch" >> make.inc.common
 echo "F90_OPTS = -I%{_fmoddir} %{optflags}" >> make.inc.common
 echo "F77_OPTS = \$(F90_OPTS)" >> make.inc.common
 echo "AR = ar" >> make.inc.common
+# Use stub routines which Elk can call when libraries are not available
+echo "SRC_MKL = mkl_stub.f90" >> make.inc.common
+echo "SRC_BLIS = blis_stub.f90" >> make.inc.common
+echo "SRC_W90S = w90_stub.f90" >> make.inc.common
 echo "LIB_LPK = %BLASLAPACK" >> make.inc.common
 # enable fftw/libxc dynamic linking
 echo "LIB_FFT = %FFTW" >> make.inc.common
@@ -259,6 +263,9 @@ mv tests.orig tests
 
 
 %changelog
+* Fri Jan 31 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.3.2-1
+- new upstream release
+
 * Fri Jan 31 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-4
 - fix gfortran 10 -fallow-argument-mismatch
 
