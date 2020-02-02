@@ -28,7 +28,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		5.2.14
-Release:		3%{?dist}
+Release:		4%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -105,8 +105,8 @@ This package contains the common binaries.
 # create common make.inc.common
 # default serial fortran
 echo "SRC_MPI = mpi_stub.f90" > make.inc.common
-echo "F90 = gfortran -fopenmp" >> make.inc.common
-echo "F77 = gfortran -fopenmp" >> make.inc.common
+echo "F90 = gfortran -fopenmp -fallow-argument-mismatch" >> make.inc.common
+echo "F77 = gfortran -fopenmp -fallow-argument-mismatch" >> make.inc.common
 echo "F90_OPTS = -I%{_fmoddir} %{optflags}" >> make.inc.common
 echo "F77_OPTS = \$(F90_OPTS)" >> make.inc.common
 echo "AR = ar" >> make.inc.common
@@ -134,8 +134,8 @@ mv src src.orig
 # To avoid replicated code define a macro
 %global dobuild() \
 cp -p make.inc.common make.inc&& \
-%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp|" make.inc&& \
-%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp|" make.inc&& \
+%{__sed} -i "s|F90 =.*|F90 = mpif90 -fopenmp -fallow-argument-mismatch|" make.inc&& \
+%{__sed} -i "s|F77 =.*|F77 = mpif77 -fopenmp -fallow-argument-mismatch|" make.inc&& \
 %{__sed} -i "s|F90_OPTS =|F90_OPTS = -I\${MPI_FORTRAN_MOD_DIR}|" make.inc&& \
 echo "SRC_MPI =" >> make.inc&&\
 cat make.inc&& \
@@ -259,6 +259,9 @@ mv tests.orig tests
 
 
 %changelog
+* Fri Jan 31 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-4
+- fix gfortran 10 -fallow-argument-mismatch
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 5.2.14-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
