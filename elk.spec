@@ -34,7 +34,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		6.3.2
-Release:		2%{?dist}
+Release:		3%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -269,6 +269,9 @@ mv tests.orig tests
 
 
 %changelog
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 6.3.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Mon Mar 02 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.3.2-2
 - handle -fallow-argument-mismatch outside of f32
 
