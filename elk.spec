@@ -24,7 +24,11 @@ ExclusiveArch:          x86_64 %{ix86}
 ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
-%global BLASLAPACK -L%{_libdir} -lopenblas
+%if 0%{?fedora} >= 33
+%global BLASLAPACK flexiblas
+%else
+%global BLASLAPACK openblas
+%endif
 %global FFTW -L%{_libdir} -lfftw3
 %if 0%{?fedora} >= 25 || 0%{?el8}
 %global LIBXC -L%{_libdir} -lxc -lxcf90
@@ -34,7 +38,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		6.3.2
-Release:		4%{?dist}
+Release:		5%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -44,7 +48,7 @@ Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.t
 BuildRequires:		time
 
 BuildRequires:		gcc-gfortran
-BuildRequires:		openblas-devel
+BuildRequires:		%{BLASLAPACK}-devel
 BuildRequires:		fftw3-devel
 BuildRequires:		libxc-devel
 
@@ -120,7 +124,7 @@ echo "AR = ar" >> make.inc.common
 echo "SRC_MKL = mkl_stub.f90" >> make.inc.common
 echo "SRC_BLIS = blis_stub.f90" >> make.inc.common
 echo "SRC_W90S = w90_stub.f90" >> make.inc.common
-echo "LIB_LPK = %BLASLAPACK" >> make.inc.common
+echo "LIB_LPK = -L%{_libdir} -l%{BLASLAPACK}" >> make.inc.common
 # enable fftw/libxc dynamic linking
 echo "LIB_FFT = %FFTW" >> make.inc.common
 echo "SRC_FFT = zfftifc_fftw.f90" >> make.inc.common
@@ -269,6 +273,9 @@ mv tests.orig tests
 
 
 %changelog
+* Wed Aug 12 2020 Iñaki Úcar <iucar@fedoraproject.org> - 6.3.2-5
+- https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 6.3.2-4
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
