@@ -37,13 +37,15 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
 Name:			elk
-Version:		6.3.2
-Release:		5%{?dist}
+Version:		6.8.4
+Release:		1%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
+# 32-bit patch https://sourceforge.net/p/elk/discussion/897822/thread/ac421f1777/
+Patch0:			src_libxcifc.f90.diff
 
 BuildRequires:		time
 
@@ -61,7 +63,7 @@ with many advanced features. Written originally at\
 Karl-Franzens-Universität Graz as a milestone of the EXCITING EU Research and\
 Training Network, the code is designed to be as simple as possible so that new\
 developments in the field of density functional theory (DFT) can be added\
-quickly and reliably. 
+quickly and reliably.
 
 
 %description
@@ -112,6 +114,8 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch0 -p0
+
 # create common make.inc.common
 # default serial fortran
 echo "SRC_MPI = mpi_stub.f90" > make.inc.common
@@ -129,7 +133,7 @@ echo "LIB_LPK = -L%{_libdir} -l%{BLASLAPACK}" >> make.inc.common
 echo "LIB_FFT = %FFTW" >> make.inc.common
 echo "SRC_FFT = zfftifc_fftw.f90" >> make.inc.common
 echo "LIB_libxc = %LIBXC" >> make.inc.common
-echo "SRC_libxc = libxcifc.f90" >> make.inc.common
+echo "SRC_libxc = libxcf90.f90 libxcifc.f90" >> make.inc.common
 
 # remove bundling of BLAS/LAPACK/FFTW/LIBXC/ERF
 sed -i "s/blas lapack fft elk/elk/" src/Makefile
@@ -213,7 +217,7 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/%{name}
 # don't copy utilities - they trigger dependency on perl, python ...
 cp -rp species $RPM_BUILD_ROOT%{_datadir}/%{name}
 cp -rp make.inc* $RPM_BUILD_ROOT%{_datadir}/%{name}
-cp -rp tests examples $RPM_BUILD_ROOT%{_datadir}/%{name}
+cp -rp tests tests-libxc examples $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 
 %check
@@ -221,16 +225,23 @@ cp -rp tests examples $RPM_BUILD_ROOT%{_datadir}/%{name}
 export NPROC=1 # test on X cores
 export OMP_NUM_THREADS=$NPROC
 
+# save tests
+mv tests-libxc tests-libxc.orig
+mv tests tests.orig
+
 # To avoid replicated code define a macro
 %global docheck() \
+cp -rp tests-libxc.orig tests-libxc&& \
+sed -i "s#../../src/elk#$ELK_EXECUTABLE#g" tests-libxc/test.sh&& \
+sed -i "/Failed/ a \ \ \ \ cat test.log" tests-libxc/test.sh&& \
+time %{__make} test-libxc 2>&1 | tee test-libxc.${NPROC}$MPI_SUFFIX.log&& \
 cp -rp tests.orig tests&& \
-sed -i "s#../../src/elk#$ELK_EXECUTABLE#g" tests/tests.sh&& \
-time %{__make} test 2>&1 | tee tests.${NPROC}$MPI_SUFFIX.log&& \
-rm -rf tests
+sed -i "s#mpirun -n 4 ../../src/elk#$ELK_EXECUTABLE#g" tests/test-mpi.sh&& \
+sed -i "/Failed/ a \ \ \ \ cat test.log" tests/test-mpi.sh&& \
+time %{__make} test-mpi 2>&1 | tee test-mpi.${NPROC}$MPI_SUFFIX.log&& \
+rm -rf tests tests-libxc
 
 # check serial version
-mv tests tests.orig.orig
-cp -rp tests.orig.orig tests.orig
 ELK_EXECUTABLE="../../%{name}" MPI_SUFFIX=_openmp %docheck
 
 # check openmpi version
@@ -245,6 +256,7 @@ ELK_EXECUTABLE="mpiexec -np ${NPROC} ../../%{name}$MPI_SUFFIX" %docheck
 %{_mpich_unload}
 
 # restore tests
+mv tests-libxc.orig tests-libxc
 mv tests.orig tests
 
 
@@ -273,6 +285,11 @@ mv tests.orig tests
 
 
 %changelog
+* Sun Sep 06 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.8.4-1
+- New upstream release
+- Run test-libxc and test-mpi
+- Patch for 32-bit systems
+
 * Wed Aug 12 2020 Iñaki Úcar <iucar@fedoraproject.org> - 6.3.2-5
 - https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
 
@@ -413,4 +430,3 @@ mv tests.orig tests
 
 * Fri Jun 12 2009 Marcin Dulak <Marcin.Dulak@gmail.com> 0.9.262-1
 - initial build
-
