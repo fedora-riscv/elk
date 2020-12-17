@@ -84,6 +84,7 @@ This package contains the openmpi version.
 %package mpich
 Summary:		%{name} - mpich version
 BuildRequires:		mpich-devel
+BuildRequires: make
 Requires:		%{name}-species = %{version}-%{release}
 
 %description mpich
