@@ -38,7 +38,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		6.8.4
-Release:		1%{?dist}
+Release:		2%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -286,6 +286,9 @@ mv tests.orig tests
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 6.8.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Sun Sep 06 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.8.4-1
 - New upstream release
 - Run test-libxc and test-mpi
