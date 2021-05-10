@@ -37,15 +37,13 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
 Name:			elk
-Version:		6.8.4
-Release:		2%{?dist}
+Version:		7.1.14
+Release:		1%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
 URL:			http://elk.sourceforge.net/
 Source0:		https://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tgz
-# 32-bit patch https://sourceforge.net/p/elk/discussion/897822/thread/ac421f1777/
-Patch0:			src_libxcifc.f90.diff
 
 BuildRequires:		time
 
@@ -115,7 +113,6 @@ This package contains the common binaries.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch0 -p0
 
 # create common make.inc.common
 # default serial fortran
@@ -286,10 +283,14 @@ mv tests.orig tests
 
 
 %changelog
+* Fri May 07 2021 Marcin Dulak <marcindulak@fedoraproject.org> - 7.1.14-1
+- New upstream release
+- Change changelog email
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 6.8.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
-* Sun Sep 06 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.8.4-1
+* Sun Sep 06 2020 Marcin Dulak <marcindulak@fedoraproject.org> - 6.8.4-1
 - New upstream release
 - Run test-libxc and test-mpi
 - Patch for 32-bit systems
@@ -304,13 +305,13 @@ mv tests.orig tests
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 6.3.2-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
-* Mon Mar 02 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.3.2-2
+* Mon Mar 02 2020 Marcin Dulak <marcindulak@fedoraproject.org> - 6.3.2-2
 - handle -fallow-argument-mismatch outside of f32
 
-* Fri Jan 31 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 6.3.2-1
+* Fri Jan 31 2020 Marcin Dulak <marcindulak@fedoraproject.org> - 6.3.2-1
 - new upstream release
 
-* Fri Jan 31 2020 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-4
+* Fri Jan 31 2020 Marcin Dulak <marcindulak@fedoraproject.org> - 5.2.14-4
 - fix gfortran 10 -fallow-argument-mismatch
 
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 5.2.14-3
@@ -319,7 +320,7 @@ mv tests.orig tests
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 5.2.14-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
-* Fri May 17 2019 Marcin Dulak <Marcin.Dulak@gmail.com> - 5.2.14-1
+* Fri May 17 2019 Marcin Dulak <marcindulak@fedoraproject.org> - 5.2.14-1
 - new upstream release
 - stop maintenance on epel6/epel7 since libxc 3 or newer is required by elk-5.2.14
 
@@ -332,7 +333,7 @@ mv tests.orig tests
 * Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.6-29
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
-* Sat Apr 07 2018 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.3.6-28
+* Sat Apr 07 2018 Marcin Dulak <marcindulak@fedoraproject.org> - 4.3.6-28
 - keep both libxc 3 and 4 patches, since the repo is synced to older fedora and epel
 
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.6-27
@@ -347,7 +348,7 @@ mv tests.orig tests
 * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.6-24
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
-* Wed Mar 29 2017 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.3.6-23
+* Wed Mar 29 2017 Marcin Dulak <marcindulak@fedoraproject.org> - 4.3.6-23
 - upstream update
 
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.15-23
@@ -356,7 +357,7 @@ mv tests.orig tests
 * Fri Oct 21 2016 Orion Poplawski <orion@cora.nwra.com> - 4.0.15-22
 - Rebuild for openmpi 2.0
 
-* Tue Aug 09 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 4.0.15-21
+* Tue Aug 09 2016 Marcin Dulak <marcindulak@fedoraproject.org> - 4.0.15-21
 - upstream update
 - remove defattr
 - run all tests
@@ -375,7 +376,7 @@ mv tests.orig tests
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.17-17
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
-* Fri Jan 22 2016 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.3.17-16
+* Fri Jan 22 2016 Marcin Dulak <marcindulak@fedoraproject.org> - 3.3.17-16
 - upstream update
 - ExclusiveArch due to openblas
 - old el6 mpich macros removed
@@ -389,29 +390,29 @@ mv tests.orig tests
 * Sun Jul 26 2015 Sandro Mani <manisandro@gmail.com> - 3.1.12-13
 - Rebuild for RPM MPI Requires Provides Change
 
-* Thu Jul  2 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.1.12-12
+* Thu Jul  2 2015 Marcin Dulak <marcindulak@fedoraproject.org> - 3.1.12-12
 - upstream update
 - defattr set
 
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.18-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
-* Fri Apr 24 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.0.18-10
+* Fri Apr 24 2015 Marcin Dulak <marcindulak@fedoraproject.org> - 3.0.18-10
 - upstream update
 
-* Fri Feb 13 2015 Marcin Dulak <Marcin.Dulak@gmail.com> - 3.0.4-10
+* Fri Feb 13 2015 Marcin Dulak <marcindulak@fedoraproject.org> - 3.0.4-10
 - upstream update
 
-* Thu Oct 23 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-10
+* Thu Oct 23 2014 Marcin Dulak <marcindulak@fedoraproject.org> - 2.3.22-10
 - mpich version 3 on EL6
 
-* Tue Oct 07 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-9
+* Tue Oct 07 2014 Marcin Dulak <marcindulak@fedoraproject.org> - 2.3.22-9
 - build against new openmpi
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.22-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
-* Sat Jun 07 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.22-7
+* Sat Jun 07 2014 Marcin Dulak <marcindulak@fedoraproject.org> - 2.3.22-7
 - upstream update
 - fix mpi build
 - tests/test-018 hangs - disabled
@@ -419,18 +420,18 @@ mv tests.orig tests
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.16-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
-* Tue Apr 22 2014 Marcin Dulak <Marcin.Dulak@gmail.com> - 2.3.16-5
+* Tue Apr 22 2014 Marcin Dulak <marcindulak@fedoraproject.org> - 2.3.16-5
 - upstream update
 
 * Tue Mar 18 2014 Björn Esser <bjoern.esser@gmail.com> - 2.2.10-4
 - rebuilt for mpich-3.1
 
-* Tue Feb 18 2014 Marcin Dulak <Marcin.Dulak@gmail.com> 2.2.10-3
+* Tue Feb 18 2014 Marcin Dulak <marcindulak@fedoraproject.org> 2.2.10-3
 - removed bundling of BLAS, LAPACK, FFTW, LIBXC, ERF
 - test on 2 cores to reduce randomness in koji multicore builds
 
-* Fri Feb 7 2014 Marcin Dulak <Marcin.Dulak@gmail.com> 2.2.10-2
+* Fri Feb 7 2014 Marcin Dulak <marcindulak@fedoraproject.org> 2.2.10-2
 - update for Fedora/EPEL
 
-* Fri Jun 12 2009 Marcin Dulak <Marcin.Dulak@gmail.com> 0.9.262-1
+* Fri Jun 12 2009 Marcin Dulak <marcindulak@fedoraproject.org> 0.9.262-1
 - initial build
