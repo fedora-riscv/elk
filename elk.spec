@@ -38,7 +38,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		7.2.42
-Release:		1%{?dist}
+Release:		2%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -49,6 +49,12 @@ BuildRequires:		time
 
 BuildRequires:		gcc-gfortran
 BuildRequires:		%{BLASLAPACK}-devel
+# Use openblas-serial instead of openblas-openmp
+%if 0%{?fedora} >= 33 || 0%{?rhel} >= 9
+BuildRequires:		flexiblas-openblas-serial
+Requires:		flexiblas-openblas-serial
+%endif
+
 BuildRequires:		fftw3-devel
 BuildRequires:		libxc-devel
 
@@ -194,7 +200,14 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 # To avoid replicated code define a macro
 %global doinstall() \
 mkdir -p $RPM_BUILD_ROOT/$MPI_BIN&& \
-install -p -m 755 %{name}$MPI_SUFFIX $RPM_BUILD_ROOT/$MPI_BIN
+install -p -m 755 %{name}$MPI_SUFFIX $RPM_BUILD_ROOT/$MPI_BIN/%{name}_binary$MPI_SUFFIX&& \
+echo '#!/bin/bash' >  $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX&& \
+echo 'export FLEXIBLAS=openblas-serial' >>  $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX&& \
+echo -n "%{name}_binary$MPI_SUFFIX " >>  $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX&& \
+echo '"$@"' >>  $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX&& \
+chmod 755  $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX&& \
+cat $RPM_BUILD_ROOT/$MPI_BIN/%{name}$MPI_SUFFIX
+
 
 # install serial version
 mkdir -p $RPM_BUILD_ROOT%{_bindir}
@@ -275,14 +288,19 @@ mv tests.orig tests
 
 
 %files openmpi
+%{_libdir}/openmpi%{?_opt_cc_suffix}/bin/%{name}_binary_openmpi
 %{_libdir}/openmpi%{?_opt_cc_suffix}/bin/%{name}_openmpi
 
 
 %files mpich
+%{_libdir}/mpich%{?_opt_cc_suffix}/bin/%{name}_binary_mpich
 %{_libdir}/mpich%{?_opt_cc_suffix}/bin/%{name}_mpich
 
 
 %changelog
+* Tue Aug 03 2021 Marcin Dulak <marcindulak@fedoraproject.org> - 7.2.42-2
+- export FLEXIBLAS=openblas-serial using a wrapper https://bugzilla.redhat.com/show_bug.cgi?id=1920009
+
 * Tue Aug 03 2021 Marcin Dulak <marcindulak@fedoraproject.org> - 7.2.42-1
 - New upstream release
 
