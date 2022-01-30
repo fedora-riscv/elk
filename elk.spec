@@ -37,8 +37,8 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 %endif
 
 Name:			elk
-Version:		7.2.42
-Release:		3%{?dist}
+Version:		8.3.22
+Release:		1%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
@@ -298,6 +298,9 @@ mv tests.orig tests
 
 
 %changelog
+* Sun Jan 30 2022 Marcin Dulak <marcindulak@fedoraproject.org> - 8.3.22-1
+- New upstream release
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 7.2.42-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
