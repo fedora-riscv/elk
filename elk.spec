@@ -19,9 +19,9 @@ elk-5.2.14 requires libxc 3 or newer
 
 %if 0%{?el6}
 # el6/ppc64 Error: No Package found for mpich-devel
-ExclusiveArch:          x86_64 %{ix86}
+ExclusiveArch:          x86_64 %{ix86} riscv64
 %else
-ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
+ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64} riscv64
 %endif
 
 %if 0%{?fedora} >= 33 || 0%{?rhel} >= 9
@@ -38,7 +38,7 @@ ExclusiveArch:          x86_64 %{ix86} aarch64 %{arm} %{power64}
 
 Name:			elk
 Version:		8.8.26
-Release:		2%{?dist}
+Release:		2.rv64%{?dist}
 Summary:		An all-electron full-potential linearised augmented-plane wave code
 
 License:		GPLv3+
